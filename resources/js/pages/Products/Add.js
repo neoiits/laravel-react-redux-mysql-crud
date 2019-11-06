@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Button, Modal} from 'react-bootstrap';
 import {Input, TextArea} from '../../components/Inputs';
 import {useDispatch} from 'react-redux';
-import {NewProduct} from '../../store/actions/Product';
+import {NewProduct, UpdateProduct} from '../../store/actions/Product';
 
 const Add = (props) => {
 
@@ -20,13 +20,16 @@ const Add = (props) => {
         let data = new FormData(e.target);
         axios.post('/api/product/store', data)
             .then(response => {
+                console.log(response.data);
                 setErrorMessage(response.data);
                 setLoading(false);
-                if(response.data.status == 'success'){
-                    dispatch(()=> NewProduct(response.data));
-                    this.props.handleClose(false);
-                }
                 toastr[response.data.status](response.data.message, "Alert");
+                if(response.data.status == 'success'){
+                    dispatch(NewProduct(response.data.product));
+                    setTimeout(()=>{
+                        props.handleClose();
+                    }, 1500);
+                }
             })
             .catch(error => {
                 let err = error.response;
@@ -51,13 +54,13 @@ const Add = (props) => {
             .then(response => {
                 setErrorMessage(response.data);
                 setLoading(false);
-                if(response.data.status == 'success'){
-
-                }
-                else{
-
-                }
                 toastr[response.data.status](response.data.message, "Alert");
+                if(response.data.status == 'success'){
+                    dispatch(UpdateProduct(response.data.product));
+                    setTimeout(()=>{
+                        props.handleClose();
+                    }, 1500);
+                }
             })
             .catch(error => {
                 let err = error.response;

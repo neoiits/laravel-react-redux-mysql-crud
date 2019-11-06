@@ -11,3 +11,17 @@ export const NewProduct = (product) => {
         payload : product
     }
 }
+
+export const UpdateProduct = (product) => {
+    return {
+        type : 'UPDATE',
+        payload : product
+    }
+}
+
+export const DeleteProduct = (id) => {
+    return {
+        type : 'DELETE',
+        payload : id
+    }
+}

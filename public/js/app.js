@@ -89779,8 +89779,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Inputs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../components/Inputs */ "./resources/js/components/Inputs/index.js");
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
 /* harmony import */ var _store_actions_Product__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../store/actions/Product */ "./resources/js/store/actions/Product.js");
-var _this = undefined;
-
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
@@ -89820,18 +89818,17 @@ var Add = function Add(props) {
     setLoading(true);
     var data = new FormData(e.target);
     axios.post('/api/product/store', data).then(function (response) {
+      console.log(response.data);
       setErrorMessage(response.data);
       setLoading(false);
+      toastr[response.data.status](response.data.message, "Alert");
 
       if (response.data.status == 'success') {
-        dispatch(function () {
-          return Object(_store_actions_Product__WEBPACK_IMPORTED_MODULE_4__["NewProduct"])(response.data);
-        });
-
-        _this.props.handleClose(false);
+        dispatch(Object(_store_actions_Product__WEBPACK_IMPORTED_MODULE_4__["NewProduct"])(response.data.product));
+        setTimeout(function () {
+          props.handleClose();
+        }, 1500);
       }
-
-      toastr[response.data.status](response.data.message, "Alert");
     })["catch"](function (error) {
       var err = error.response;
 
@@ -89855,10 +89852,14 @@ var Add = function Add(props) {
     axios.post('/api/product/' + props.product.id + '/update', data).then(function (response) {
       setErrorMessage(response.data);
       setLoading(false);
-
-      if (response.data.status == 'success') {} else {}
-
       toastr[response.data.status](response.data.message, "Alert");
+
+      if (response.data.status == 'success') {
+        dispatch(Object(_store_actions_Product__WEBPACK_IMPORTED_MODULE_4__["UpdateProduct"])(response.data.product));
+        setTimeout(function () {
+          props.handleClose();
+        }, 1500);
+      }
     })["catch"](function (error) {
       var err = error.response;
 
@@ -90011,6 +90012,13 @@ function (_Component) {
       });
     }
   }, {
+    key: "deleteProduct",
+    value: function deleteProduct(product) {
+      if (confirm('Are you sure you want delete this product?')) {
+        console.log(product);
+      }
+    }
+  }, {
     key: "render",
     value: function render() {
       var _this3 = this;
@@ -90059,6 +90067,7 @@ function (_Component) {
           className: "text-center"
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_3__["Button"], {
           variant: "primary",
+          className: "m-1",
           onClick: function onClick() {
             return _this3.setState({
               show: true,
@@ -90067,6 +90076,12 @@ function (_Component) {
           }
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
           className: "fas fa-pen"
+        })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_3__["Button"], {
+          variant: "danger",
+          className: "m-1",
+          onClick: _this3.deleteProduct.bind(_this3, product)
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+          className: "fas fa-trash"
         }))));
       }) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
         colSpan: 4
@@ -90100,13 +90115,15 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 /*!***********************************************!*\
   !*** ./resources/js/store/actions/Product.js ***!
   \***********************************************/
-/*! exports provided: AllProduct, NewProduct */
+/*! exports provided: AllProduct, NewProduct, UpdateProduct, DeleteProduct */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AllProduct", function() { return AllProduct; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NewProduct", function() { return NewProduct; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "UpdateProduct", function() { return UpdateProduct; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DeleteProduct", function() { return DeleteProduct; });
 var AllProduct = function AllProduct(products) {
   return {
     type: 'LIST',
@@ -90117,6 +90134,18 @@ var NewProduct = function NewProduct(product) {
   return {
     type: 'ADD',
     payload: product
+  };
+};
+var UpdateProduct = function UpdateProduct(product) {
+  return {
+    type: 'UPDATE',
+    payload: product
+  };
+};
+var DeleteProduct = function DeleteProduct(id) {
+  return {
+    type: 'DELETE',
+    payload: id
   };
 };
 
@@ -90131,6 +90160,12 @@ var NewProduct = function NewProduct(product) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var ProductReducer = function ProductReducer() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var action = arguments.length > 1 ? arguments[1] : undefined;
@@ -90141,6 +90176,16 @@ var ProductReducer = function ProductReducer() {
 
     case 'ADD':
       return state.concat(action.payload);
+
+    case 'UPDATE':
+      return state.map(function (product) {
+        return product.id == action.payload.id ? _objectSpread({}, product, {}, action.payload) : product;
+      });
+
+    case 'DELETE':
+      return state.filter(function (product) {
+        return product.id != action.payload;
+      });
 
     default:
       return state;
