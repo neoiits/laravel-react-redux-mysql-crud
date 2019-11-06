@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    
+
     public function index(){
         return Product::all();
     }
@@ -38,6 +38,17 @@ class ProductController extends Controller
         return [
             'status'    => 'success',
             'message'   => 'Great! You\'ve Updated Product Details Successfully.',
+            'product'      => $product,
+        ];
+    }
+
+    
+
+    public function delete(Product $product){
+        $product->delete();
+        return [
+            'status'    => 'success',
+            'message'   => 'Great! You\'ve Deleted Product Details Successfully.',
             'product'      => $product,
         ];
     }

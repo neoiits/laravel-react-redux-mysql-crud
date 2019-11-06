@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import Add from './Add';
 import {connect} from 'react-redux';
 import {Row, Col, Table, Button} from 'react-bootstrap';
-import {AllProduct} from '../../store/actions/Product';
+import {AllProduct, DeleteProduct} from '../../store/actions/Product';
 
 class Products extends Component{
     constructor(props){
@@ -32,6 +32,20 @@ class Products extends Component{
             });
     }
 
+    
+    deleteProduct(product){
+        if(confirm('Are you sure you want delete this product?')){
+            axios.post('/api/product/'+product.id+'/delete',{}).then(response=>{
+                toastr[response.data.status](response.data.message, "Alert");
+                if(response.data.status == 'success'){
+                    this.props.DeleteProduct(response.data.product.id);
+                }
+            }).catch(response=>{
+
+            });
+        }
+    }
+
     render() {
         const {products} = this.props;
         return (
@@ -53,9 +67,9 @@ class Products extends Component{
                             <thead>
                             <tr>
                                 <th>Title</th>
-                                <th className="text-center">Product Price</th>
+                                <th width="100" className="text-center">Product Price</th>
                                 <th>Description</th>
-                                <th className="text-center">Actions</th>
+                                <th width="150" className="text-center">Actions</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -66,8 +80,11 @@ class Products extends Component{
                                         <td className="text-center">${product.price}</td>
                                         <td>{product.description}</td>
                                         <td className="text-center">
-                                            <Button variant="primary" onClick={()=>this.setState({show:true, product : product})}>
+                                            <Button variant="primary" className="m-1" onClick={()=>this.setState({show:true, product : product})}>
                                                 <span className="fas fa-pen"></span>
+                                            </Button>
+                                            <Button variant="danger" className="m-1" onClick={this.deleteProduct.bind(this, product)}>
+                                                <span className="fas fa-trash"></span>
                                             </Button>
                                         </td>
                                     </tr>
@@ -94,7 +111,8 @@ const mapStateToProps = (state) => {
 }
 const mapDispatchToProps = (dispatch) => {
     return {
-        ProductList : (products) => dispatch(AllProduct(products))
+        ProductList : (products) => dispatch(AllProduct(products)),
+        DeleteProduct : (id) => dispatch(DeleteProduct(id)),
     }
 }
 

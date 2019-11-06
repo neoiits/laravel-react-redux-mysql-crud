@@ -28,7 +28,7 @@ const Add = (props) => {
                     dispatch(NewProduct(response.data.product));
                     setTimeout(()=>{
                         props.handleClose();
-                    }, 1500);
+                    }, 500);
                 }
             })
             .catch(error => {
@@ -59,7 +59,7 @@ const Add = (props) => {
                     dispatch(UpdateProduct(response.data.product));
                     setTimeout(()=>{
                         props.handleClose();
-                    }, 1500);
+                    }, 500);
                 }
             })
             .catch(error => {

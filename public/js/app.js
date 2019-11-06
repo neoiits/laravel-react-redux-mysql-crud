@@ -89827,7 +89827,7 @@ var Add = function Add(props) {
         dispatch(Object(_store_actions_Product__WEBPACK_IMPORTED_MODULE_4__["NewProduct"])(response.data.product));
         setTimeout(function () {
           props.handleClose();
-        }, 1500);
+        }, 500);
       }
     })["catch"](function (error) {
       var err = error.response;
@@ -89858,7 +89858,7 @@ var Add = function Add(props) {
         dispatch(Object(_store_actions_Product__WEBPACK_IMPORTED_MODULE_4__["UpdateProduct"])(response.data.product));
         setTimeout(function () {
           props.handleClose();
-        }, 1500);
+        }, 500);
       }
     })["catch"](function (error) {
       var err = error.response;
@@ -90014,14 +90014,22 @@ function (_Component) {
   }, {
     key: "deleteProduct",
     value: function deleteProduct(product) {
+      var _this3 = this;
+
       if (confirm('Are you sure you want delete this product?')) {
-        console.log(product);
+        axios.post('/api/product/' + product.id + '/delete', {}).then(function (response) {
+          toastr[response.data.status](response.data.message, "Alert");
+
+          if (response.data.status == 'success') {
+            _this3.props.DeleteProduct(response.data.product.id);
+          }
+        })["catch"](function (response) {});
       }
     }
   }, {
     key: "render",
     value: function render() {
-      var _this3 = this;
+      var _this4 = this;
 
       var products = this.props.products;
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_3__["Row"], {
@@ -90037,7 +90045,7 @@ function (_Component) {
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_3__["Button"], {
         variant: "primary",
         onClick: function onClick() {
-          return _this3.setState({
+          return _this4.setState({
             show: true
           });
         }
@@ -90055,8 +90063,10 @@ function (_Component) {
         hover: true,
         size: "sm"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Title"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        width: "100",
         className: "text-center"
       }, "Product Price"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Description"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        width: "150",
         className: "text-center"
       }, "Actions"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, products.length > 0 ? products.map(function (product) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", {
@@ -90069,7 +90079,7 @@ function (_Component) {
           variant: "primary",
           className: "m-1",
           onClick: function onClick() {
-            return _this3.setState({
+            return _this4.setState({
               show: true,
               product: product
             });
@@ -90079,7 +90089,7 @@ function (_Component) {
         })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_3__["Button"], {
           variant: "danger",
           className: "m-1",
-          onClick: _this3.deleteProduct.bind(_this3, product)
+          onClick: _this4.deleteProduct.bind(_this4, product)
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
           className: "fas fa-trash"
         }))));
@@ -90103,6 +90113,9 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
     ProductList: function ProductList(products) {
       return dispatch(Object(_store_actions_Product__WEBPACK_IMPORTED_MODULE_4__["AllProduct"])(products));
+    },
+    DeleteProduct: function DeleteProduct(id) {
+      return dispatch(Object(_store_actions_Product__WEBPACK_IMPORTED_MODULE_4__["DeleteProduct"])(id));
     }
   };
 };
