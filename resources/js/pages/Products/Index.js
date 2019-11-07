@@ -20,7 +20,7 @@ class Products extends Component{
             product : null
         });
     }
-
+/* Load products here from laravel api and dispatch all the records to product reducer */
     loadProducts(){
         axios.get('/api/product/index')
             .then(response => {
@@ -32,7 +32,7 @@ class Products extends Component{
             });
     }
 
-    
+/* Delete product here from laravel api and dispatch deleted records to product reducer so filter it from reducer */    
     deleteProduct(product){
         if(confirm('Are you sure you want delete this product?')){
             axios.post('/api/product/'+product.id+'/delete',{}).then(response=>{
@@ -103,12 +103,15 @@ class Products extends Component{
     }
 }
 
+/* Map all the reducer states to props */
 const mapStateToProps = (state) => {
     const {ProductReducer} = state;
     return {
         products : ProductReducer
     }
 }
+
+/* Map dispatch actions to props */
 const mapDispatchToProps = (dispatch) => {
     return {
         ProductList : (products) => dispatch(AllProduct(products)),
@@ -116,4 +119,5 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
+/* Connect reducer to component via connect method */
 export default connect(mapStateToProps, mapDispatchToProps)(Products);

@@ -6,12 +6,14 @@ import {NewProduct, UpdateProduct} from '../../store/actions/Product';
 
 const Add = (props) => {
 
+    /** Used dispatch component in function component */
     const dispatch = useDispatch();
 
     const [errors, setErrors] = useState([]);
     const [errorMessage, setErrorMessage] = useState([]);
     const [loading, setLoading] = useState(false);
 
+    /** Save product and dispatch to reducer */
     const handleSubmit = (e) => {
         e.preventDefault();
         setErrors([]);
@@ -44,6 +46,7 @@ const Add = (props) => {
             });
     }
 
+    /** Update product and dispatch to reducer */
     const handleUpdate = (e) => {
         e.preventDefault();
         setErrors([]);

@@ -17,6 +17,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+/* Request routes from react app */
 Route::get("/product/index", "ProductController@index");
 Route::post("/product/store", "ProductController@store");
 Route::post("/product/{product}/update", "ProductController@update");
